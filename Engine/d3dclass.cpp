@@ -307,7 +307,8 @@ bool D3DClass::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 
 	// Setup the raster description which will determine how and what polygons will be drawn.
 	rasterDesc.AntialiasedLineEnable = false;
-	rasterDesc.CullMode = D3D11_CULL_BACK;
+	rasterDesc.CullMode = D3D11_CULL_NONE; // 모든 삼각형 출력(앞뒤 상관 없음) - 배경때문에 Test로 모두 출력으로 바꿔봄
+	//rasterDesc.CullMode = D3D11_CULL_BACK; // 뒷면 출력 안함
 	rasterDesc.DepthBias = 0;
 	rasterDesc.DepthBiasClamp = 0.0f;
 	rasterDesc.DepthClipEnable = true;

@@ -1,2 +1,6 @@
-﻿  LightShaderClass.cpp
-  Engine.vcxproj -> C:\Users\Leeso\Desktop\B577024 이수환\Debug\Engine.exe
+﻿  GraphicsClass.cpp
+c:\users\kimtaejun\desktop\directx project\directteamproject\engine\graphicsclass.cpp(210): warning C4244: '초기화 중': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+c:\users\kimtaejun\desktop\directx project\directteamproject\engine\graphicsclass.cpp(210): warning C4244: '초기화 중': 'float'에서 'const int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+c:\users\kimtaejun\desktop\directx project\directteamproject\engine\graphicsclass.cpp(231): warning C4244: '인수': 'const int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+c:\users\kimtaejun\desktop\directx project\directteamproject\engine\graphicsclass.cpp(309): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
+  Engine.vcxproj -> C:\Users\KimTaejun\Desktop\DirectX Project\DirectTeamProject\Debug\Engine.exe

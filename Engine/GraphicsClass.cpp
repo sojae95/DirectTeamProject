@@ -64,18 +64,20 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd, Inp
 		"../Engine/data/sword.obj",
 		"../Engine/data/doll.obj",
 		"../Engine/data/M1911.obj",
-		"../Engine/data/cube.obj"
+		"../Engine/data/cube.obj",
+		"../Engine/data/SkyBoxTestCube.obj"
 	};
 
 	WCHAR* textures[] = {
 		L"../Engine/data/t_sword.dds",
 		L"../Engine/data/t_doll.dds",
 		L"../Engine/data/t_M1911.dds",
-		L"../Engine/data/seafloor.dds"
+		L"../Engine/data/seafloor.dds",
+		L"../Engine/data/SpaceBackGround.dds"
 	};
 
 	// Create the model object.
-	for (int i = 0; i < 4; i++)
+	for (int i = 0; i < 5; i++)
 	{
 		ModelClass* newModel = new ModelClass;
 		result = newModel->Initialize(m_D3D->GetDevice(), fileNames[i], textures[i]);
@@ -261,7 +263,7 @@ bool GraphicsClass::Frame(int fps, float frameTime, int cpu, int screenWidth, in
 
 bool GraphicsClass::Render(float rotation)
 {
-	D3DXMATRIX worldMatrix, viewMatrix, projectionMatrix , orthoMatrix , objRotateMatrix[4];
+	D3DXMATRIX worldMatrix, viewMatrix, projectionMatrix , orthoMatrix , objRotateMatrix[5], skyBoxScalMatrix;
 	D3DXVECTOR3 cameraPosition;
 	D3DXMATRIX rotationX, rotationY, rotationZ;
 	bool result;
@@ -283,11 +285,12 @@ bool GraphicsClass::Render(float rotation)
 	m_D3D->GetProjectionMatrix(projectionMatrix);
 	m_D3D->GetOrthoMatrix(orthoMatrix);
 
-	for (int i = 0; i < 4; ++i) objRotateMatrix[i] = worldMatrix;
+	for (int i = 0; i < 5; ++i) objRotateMatrix[i] = worldMatrix;
 	D3DXMatrixTranslation(&objRotateMatrix[0], 0.0f, 0.0f, 0.0f);
 	D3DXMatrixTranslation(&objRotateMatrix[1], -4.0f, 0.0f, 0.0f);
 	D3DXMatrixTranslation(&objRotateMatrix[2], 4.0f, 0.0f, 0.0f);
 	D3DXMatrixTranslation(&objRotateMatrix[3], 0.0f, -2.0f, 0.0f);
+	D3DXMatrixTranslation(&objRotateMatrix[4], 0.0f, 0.0f, 0.0f);
 
 	// Rotate the world matrix by the rotation value so that the triangle will spin.
 	D3DXMatrixIdentity(&rotationX);
@@ -297,15 +300,13 @@ bool GraphicsClass::Render(float rotation)
 	D3DXMatrixRotationY(&rotationY, rotation);
 	D3DXMatrixRotationY(&rotationZ, rotation);
 
-
-
 	D3DXMatrixMultiply(&objRotateMatrix[0], &objRotateMatrix[0], &rotationX);
 	D3DXMatrixMultiply(&objRotateMatrix[1], &objRotateMatrix[1], &rotationY);
 	D3DXMatrixMultiply(&objRotateMatrix[2], &objRotateMatrix[2], &rotationZ);
 
 
 	// Put the model vertex and index buffers on the graphics pipeline to prepare them for drawing.
-	for (int i = 0; i < m_Models.size() - 1; i++)
+	for (int i = 0; i < m_Models.size() -2  ; i++)
 	{
 		m_Models[i]->Render(m_D3D->GetDeviceContext());
 		// Render the model using the light shader.
@@ -322,6 +323,19 @@ bool GraphicsClass::Render(float rotation)
 	result = m_LightShader->Render(m_D3D->GetDeviceContext(), m_Models[3]->GetIndexCount(),
 		objRotateMatrix[3], viewMatrix, projectionMatrix,
 		m_Models[3]->GetTexture(), m_Light->GetDirection(),
+		m_Light->GetAmbientColor(), m_Light->GetDiffuseColor(), m_Camera->GetPosition(),
+		m_Light->GetSpecularColor(), m_Light->GetSpecularPower());
+	if (!result) return false;
+
+	D3DXMatrixIdentity(&skyBoxScalMatrix);
+	D3DXMatrixScaling(&skyBoxScalMatrix, 250.0f, 250.0f, 250.0f); //D3DClass에 reaterDesc의 cull모드 변경
+	objRotateMatrix[4] *= skyBoxScalMatrix;
+
+	m_Models[4]->Render(m_D3D->GetDeviceContext());
+	// Render the model using the light shader.
+	result = m_LightShader->Render(m_D3D->GetDeviceContext(), m_Models[4]->GetIndexCount(),
+		objRotateMatrix[4], viewMatrix, projectionMatrix,
+		m_Models[4]->GetTexture(), m_Light->GetDirection(),
 		m_Light->GetAmbientColor(), m_Light->GetDiffuseColor(), m_Camera->GetPosition(),
 		m_Light->GetSpecularColor(), m_Light->GetSpecularPower());
 	if (!result) return false;
@@ -344,7 +358,8 @@ bool GraphicsClass::Render(float rotation)
 		m_Light->GetSpecularColor(), m_Light->GetSpecularPower());
 	if (!result) return false;
 
-	m_D3D->TurnOnAlphaBlending();
+	m_D3D->TurnOnAlphaBlending();
+
 	result = m_Text->Render(m_D3D->GetDeviceContext(), worldMatrix, orthoMatrix);
 	if (!result)
 	{

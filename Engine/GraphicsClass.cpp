@@ -63,41 +63,54 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd, Inp
 	m_Camera->GetViewMatrix(baseViewMatrix);
 
 	// 객체 수
-	const int NumOfModel = 5;
+	const int NumOfModel = 4;
 
 	// Obj 파일
 	char* fileNames[NumOfModel] = {
-		"../Engine/data/sword.obj",
-		"../Engine/data/doll.obj",
-		"../Engine/data/M1911.obj",
-		"../Engine/data/cube.obj",
-		"../Engine/data/SkyBoxTestCube.obj"
+		//"../Engine/data/sword.obj",
+		//"../Engine/data/doll.obj",
+		//"../Engine/data/M1911.obj",
+		//"../Engine/data/cube.obj",
+		"../Engine/data/SkyBoxTestCube.obj", //배경 
+		"../Engine/data/Earth.obj", // 지구
+		"../Engine/data/mars.obj", // 화성
+		"../Engine/data/Jupiter.obj"  // 목성
 	};
 
 	// Text 파일
 	WCHAR* textures[NumOfModel] = {
-		L"../Engine/data/t_sword.dds",
-		L"../Engine/data/t_doll.dds",
-		L"../Engine/data/t_M1911.dds",
-		L"../Engine/data/seafloor.dds",
-		L"../Engine/data/SpaceBackGround.dds"
+		//L"../Engine/data/t_sword.dds",
+		//L"../Engine/data/t_doll.dds",
+		//L"../Engine/data/t_M1911.dds",
+		//L"../Engine/data/seafloor.dds",
+		L"../Engine/data/SpaceBackGround.dds", // 배경 텍스처
+		L"../Engine/data/earth.dds",  // 지구 텍스처
+		L"../Engine/data/mars.dds",  // 화성 텍스처
+		L"../Engine/data/Jupiter_diff.dds"   // 목성 텍스처 
+
 	};
 
 	D3DXVECTOR3 positions[] = {
+		//{ 0.0f, 0.0f, 0.0f},
+		//{ 0.0f, 0.0f, 0.0f},
+		//{ 0.0f, 0.0f, 0.0f},
+		//{ 0.0f, 0.0f, 0.0f},
 		{ 0.0f, 0.0f, 0.0f},
 		{ 0.0f, 0.0f, 0.0f},
-		{ 0.0f, 0.0f, 0.0f},
-		{ 0.0f, 0.0f, 0.0f},
-		{ 0.0f, 0.0f, 0.0f}
+		{ 0.0f, 0.0f, 75.0f},
+		{ 0.0f, 0.0f, 200.0f}
 	};
 
 	// 크기를 
 	D3DXVECTOR3 scales[] = {
-		{ 1.0f, 1.0f, 1.0f},
-		{ 1.0f, 1.0f, 1.0f},
-		{ 1.0f, 1.0f, 1.0f},
-		{ 1.0f, 1.0f, 1.0f},
-		{ 500.0f, 500.0f, 500.0f}
+		//{ 1.0f, 1.0f, 1.0f},
+		//{ 1.0f, 1.0f, 1.0f},
+		//{ 1.0f, 1.0f, 1.0f},
+		//{ 1.0f, 1.0f, 1.0f},
+		{ 500.0f, 500.0f, 500.0f},
+		{ 0.1f, 0.1f, 0.1f},
+		{ 2.0f, 2.0f, 2.0f},
+		{ 0.1f, 0.1f, 0.1f}
 	};
 
 	// Create the model object.
@@ -362,12 +375,7 @@ bool GraphicsClass::Render(float rotation)
 			D3DXMatrixRotationX(&rotMatX, rotX);
 			D3DXMatrixRotationY(&rotMatY, rotY);
 
-			if (i == 0) {
-				D3DXMatrixMultiply(&objMat, &rotMatX, &objMat);
-				D3DXMatrixMultiply(&objMat, &objMat, &rotMatY);
-			}
-
-			if (i == 1)
+			if (i==1 || i==2 || i==3) // (1번 - 지구, 2번 - 화성, 3번 - 목성) 회전 행렬 적용 부분입니다. 
 			{
 				D3DXMatrixMultiply(&objMat, &rotMatY, &objMat);
 			}
@@ -384,9 +392,9 @@ bool GraphicsClass::Render(float rotation)
 			//if (!result) { return false; }
 
 			//배경의 스카이 박스 부분 (이 오브젝트는 텍스트 셰이더로 랜더합니다.)
-			if (i == 4)
+			if (i == 0)
 			{
-				result = m_TextureShader->Render(m_D3D->GetDeviceContext(), m_Models[4]->GetIndexCount(),
+				result = m_TextureShader->Render(m_D3D->GetDeviceContext(), m_Models[i]->GetIndexCount(),
 					objMat, viewMatrix, projectionMatrix,
 					m_Models[i]->GetTexture());
 				if (!result) return false;

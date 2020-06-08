@@ -96,9 +96,9 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd, Inp
 		//{ 0.0f, 0.0f, 0.0f},
 		//{ 0.0f, 0.0f, 0.0f},
 		{ 0.0f, 0.0f, 0.0f},
-		{ 0.0f, 0.0f, 0.0f},
-		{ 0.0f, 0.0f, 75.0f},
-		{ 0.0f, 0.0f, 200.0f}
+		{ 0.0f, 0.0f, -500.0f},
+		{ 0.0f, 0.0f, 500.0f},
+		{ 0.0f, 0.0f, 1000.0f}
 	};
 
 	// ũ�⸦ 
@@ -107,10 +107,10 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd, Inp
 		//{ 1.0f, 1.0f, 1.0f},
 		//{ 1.0f, 1.0f, 1.0f},
 		//{ 1.0f, 1.0f, 1.0f},
-		{ 500.0f, 500.0f, 500.0f},
-		{ 0.1f, 0.1f, 0.1f},
-		{ 2.0f, 2.0f, 2.0f},
-		{ 0.1f, 0.1f, 0.1f}
+		{ 3000.0f, 3000.0f, 3000.0f},
+		{ 0.2f, 0.2f, 0.2f},
+		{ 10.0f, 10.0f, 10.0f},
+		{ 0.5f, 0.5f, 0.5f}
 	};
 
 	// Create the model object.

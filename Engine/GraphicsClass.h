@@ -49,6 +49,7 @@ private:
 	CameraClass* m_Camera;
 	InputClass* m_Input;
 	std::vector<ModelClass*> m_Models;
+	vector<D3DXMATRIX>	 m_objMatrices;
 	ModelClass* m_spaceship;
 	LightShaderClass* m_LightShader;
 	LightClass* m_Light;

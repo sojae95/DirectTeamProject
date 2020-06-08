@@ -62,7 +62,11 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd, Inp
 	m_Camera->Render();
 	m_Camera->GetViewMatrix(baseViewMatrix);
 
-	char* fileNames[] = {
+	// 객체 수
+	const int NumOfModel = 5;
+
+	// Obj 파일
+	char* fileNames[NumOfModel] = {
 		"../Engine/data/sword.obj",
 		"../Engine/data/doll.obj",
 		"../Engine/data/M1911.obj",
@@ -70,7 +74,8 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd, Inp
 		"../Engine/data/SkyBoxTestCube.obj"
 	};
 
-	WCHAR* textures[] = {
+	// Text 파일
+	WCHAR* textures[NumOfModel] = {
 		L"../Engine/data/t_sword.dds",
 		L"../Engine/data/t_doll.dds",
 		L"../Engine/data/t_M1911.dds",
@@ -78,8 +83,27 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd, Inp
 		L"../Engine/data/SpaceBackGround.dds"
 	};
 
+	D3DXVECTOR3 positions[] = {
+		{ 0.0f, 0.0f, 0.0f},
+		{ 0.0f, 0.0f, 0.0f},
+		{ 0.0f, 0.0f, 0.0f},
+		{ 0.0f, 0.0f, 0.0f},
+		{ 0.0f, 0.0f, 0.0f}
+	};
+
+	// 크기를 
+	D3DXVECTOR3 scales[] = {
+		{ 1.0f, 1.0f, 1.0f},
+		{ 1.0f, 1.0f, 1.0f},
+		{ 1.0f, 1.0f, 1.0f},
+		{ 1.0f, 1.0f, 1.0f},
+		{ 500.0f, 500.0f, 500.0f}
+	};
+
 	// Create the model object.
-	for (int i = 0; i < 5; i++)
+	D3DXMATRIX objMat, scaleMat;
+	// Create the model object.
+	for (int i = 0; i < NumOfModel; ++i)
 	{
 		ModelClass* newModel = new ModelClass;
 		result = newModel->Initialize(m_D3D->GetDevice(), fileNames[i], textures[i]);
@@ -89,7 +113,14 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd, Inp
 			return false;
 		}
 
+		m_D3D->GetWorldMatrix(objMat);
+		D3DXMatrixIdentity(&scaleMat);
+		D3DXMatrixTranslation(&objMat, positions[i].x, positions[i].y, positions[i].z);
+		D3DXMatrixScaling(&scaleMat, scales[i].x, scales[i].y, scales[i].z);
+		D3DXMatrixMultiply(&objMat, &scaleMat, &objMat);
+
 		m_Models.push_back(newModel);
+		m_objMatrices.push_back(objMat);
 	}
 
 	// Create the text object.
@@ -311,60 +342,80 @@ bool GraphicsClass::Render(float rotation)
 	m_D3D->GetProjectionMatrix(projectionMatrix);
 	m_D3D->GetOrthoMatrix(orthoMatrix);
 
-	for (int i = 0; i < 5; ++i) objRotateMatrix[i] = worldMatrix;
-	D3DXMatrixTranslation(&objRotateMatrix[0], 0.0f, 0.0f, 0.0f);
-	D3DXMatrixTranslation(&objRotateMatrix[1], -4.0f, 0.0f, 0.0f);
-	D3DXMatrixTranslation(&objRotateMatrix[2], 4.0f, 0.0f, 0.0f);
-	D3DXMatrixTranslation(&objRotateMatrix[3], 0.0f, -2.0f, 0.0f);
-	D3DXMatrixTranslation(&objRotateMatrix[4], 0.0f, 0.0f, 0.0f);
-
 	// Rotate the world matrix by the rotation value so that the triangle will spin.
-	D3DXMatrixIdentity(&rotationX);
-	D3DXMatrixIdentity(&rotationY);
-	D3DXMatrixIdentity(&rotationZ);
-	D3DXMatrixRotationY(&rotationX, rotation);
-	D3DXMatrixRotationY(&rotationY, rotation);
-	D3DXMatrixRotationY(&rotationZ, rotation);
-
-	D3DXMatrixMultiply(&objRotateMatrix[0], &objRotateMatrix[0], &rotationX);
-	D3DXMatrixMultiply(&objRotateMatrix[1], &objRotateMatrix[1], &rotationY);
-	D3DXMatrixMultiply(&objRotateMatrix[2], &objRotateMatrix[2], &rotationZ);
-
-
-	// Put the model vertex and index buffers on the graphics pipeline to prepare them for drawing.
-	for (int i = 0; i < m_Models.size() -2  ; i++)
+	for (int i = 0; i < m_Models.size(); ++i)
 	{
-		m_Models[i]->Render(m_D3D->GetDeviceContext());
-		// Render the model using the light shader.
-		result = m_LightShader->Render(m_D3D->GetDeviceContext(), m_Models[i]->GetIndexCount(),
-			objRotateMatrix[i], viewMatrix, projectionMatrix,
-			m_Models[i]->GetTexture(), m_Light->GetDirection(),
-			m_Light->GetAmbientColor(), m_Light->GetDiffuseColor(), m_Camera->GetPosition(),
-			m_Light->GetSpecularColor(), m_Light->GetSpecularPower());
-		if (!result) return false;
-	}
+		// Set the radius of the sphere to 1.0 since this is already known.
+		const float radius = 1.0f;
+		// Check if the sphere model is in the view frustum.
+		bool renderModel = true;//m_Frustum->CheckSphere(m_objMatrices[i]._41, m_objMatrices[i]._42, m_objMatrices[i]._43, radius);
+		// If it can be seen then render it, if not skip this model and check the next sphere.
+		if (renderModel)
+		{
+			D3DXMATRIX objMat, rotMatX, rotMatY;
+			static float rotX = 0.0f, rotY = 0.0f;
+			objMat = m_objMatrices[i];
+			rotX += 0.0006f;
+			rotY += 0.0006f;
+			D3DXMatrixIdentity(&rotMatX);
+			D3DXMatrixIdentity(&rotMatY);
+			D3DXMatrixRotationX(&rotMatX, rotX);
+			D3DXMatrixRotationY(&rotMatY, rotY);
 
-	m_Models[3]->Render(m_D3D->GetDeviceContext());
-	// Render the model using the light shader.
-	result = m_LightShader->Render(m_D3D->GetDeviceContext(), m_Models[3]->GetIndexCount(),
-		objRotateMatrix[3], viewMatrix, projectionMatrix,
-		m_Models[3]->GetTexture(), m_Light->GetDirection(),
-		m_Light->GetAmbientColor(), m_Light->GetDiffuseColor(), m_Camera->GetPosition(),
-		m_Light->GetSpecularColor(), m_Light->GetSpecularPower());
-	if (!result) return false;
+			if (i == 0) {
+				D3DXMatrixMultiply(&objMat, &rotMatX, &objMat);
+				D3DXMatrixMultiply(&objMat, &objMat, &rotMatY);
+			}
+
+			if (i == 1)
+			{
+				D3DXMatrixMultiply(&objMat, &rotMatY, &objMat);
+			}
+
+			m_Models[i]->Render(m_D3D->GetDeviceContext());
+			//Render the model using the light shader.
+			//result = m_ShaderManager->RenderShadowShader(m_D3D->GetDeviceContext(), m_Models[i]->GetIndexCount(),
+			//	objMat, viewMatrix, projectionMatrix, lightViewMatrix, lightProjectionMatrix,
+			//	m_Models[i]->GetTexture(), m_RenderTexture->GetShaderResourceView(),
+			//	m_Light->GetPosition(), m_Light->GetAmbientColor(), m_Light->GetDiffuseColor());
+
+			//result = m_ShaderManager->RenderPointLightShader(m_D3D->GetDeviceContext(), m_Models[i]->GetIndexCount(),
+			//	worldMatrix, viewMatrix, projectionMatrix, m_Models[i]->GetTexture(), diffuseColor, lightPosition);
+			//if (!result) { return false; }
+
+			//배경의 스카이 박스 부분 (이 오브젝트는 텍스트 셰이더로 랜더합니다.)
+			if (i == 4)
+			{
+				result = m_TextureShader->Render(m_D3D->GetDeviceContext(), m_Models[4]->GetIndexCount(),
+					objMat, viewMatrix, projectionMatrix,
+					m_Models[i]->GetTexture());
+				if (!result) return false;
+			}
+			else
+			{
+				result = m_LightShader->Render(m_D3D->GetDeviceContext(), m_Models[i]->GetIndexCount(),
+					objMat, viewMatrix, projectionMatrix,
+					m_Models[i]->GetTexture(), m_Light->GetDirection(),
+					m_Light->GetAmbientColor(), m_Light->GetDiffuseColor(), m_Camera->GetPosition(),
+					m_Light->GetSpecularColor(), m_Light->GetSpecularPower());
+				if (!result) return false;
+			}
+	
+		}
+	}
 
 
 	//배경의 스카이 박스 부분 (이 오브젝트는 텍스트 셰이더로 랜더합니다.)
-	D3DXMatrixIdentity(&skyBoxScalMatrix);
-	D3DXMatrixScaling(&skyBoxScalMatrix, 500.0f, 500.0f, 500.0f); //D3DClass에 reaterDesc의 cull모드 변경
-	objRotateMatrix[4] *= skyBoxScalMatrix;
+	//D3DXMatrixIdentity(&skyBoxScalMatrix);
+	//D3DXMatrixScaling(&skyBoxScalMatrix, 500.0f, 500.0f, 500.0f); //D3DClass에 reaterDesc의 cull모드 변경
+	//objRotateMatrix[4] *= skyBoxScalMatrix;
 
-	m_Models[4]->Render(m_D3D->GetDeviceContext());
-	// Render the model using the texture shader.
-	result = m_TextureShader->Render(m_D3D->GetDeviceContext(), m_Models[4]->GetIndexCount(),
-		objRotateMatrix[4], viewMatrix, projectionMatrix,
-		m_Models[4]->GetTexture());
-	if (!result) return false;
+	//m_Models[4]->Render(m_D3D->GetDeviceContext());
+	//// Render the model using the texture shader.
+	//result = m_TextureShader->Render(m_D3D->GetDeviceContext(), m_Models[4]->GetIndexCount(),
+	//	objRotateMatrix[4], viewMatrix, projectionMatrix,
+	//	m_Models[4]->GetTexture());
+	//if (!result) return false;
 
 
 	D3DXMATRIX SpaceShipMatrix;

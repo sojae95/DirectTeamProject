@@ -9,10 +9,12 @@ GraphicsClass::GraphicsClass()
 	m_D3D = 0;
 	m_Camera = 0;
 	m_LightShader = 0;
+	m_TextureShader = 0;
 	m_Light = 0;
 	bIsALight = true;
 	bIsDLight = false;
 	bIsSLight = false;
+
 }
 
 
@@ -120,6 +122,22 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd, Inp
 		return false;
 	}
 
+	// Create the texture shader object. 
+	//just for SkyBox
+	m_TextureShader = new TextureShaderClass;
+	if (!m_TextureShader)
+	{
+		return false;
+	}
+
+	// Initialize the light shader object.
+	result = m_TextureShader->Initialize(m_D3D->GetDevice(), hwnd);
+	if (!result)
+	{
+		MessageBox(hwnd, L"Could not initialize the textureshader object.", L"Error", MB_OK);
+		return false;
+	}
+
 	// Create the light object.
 	m_Light = new LightClass;
 	if(!m_Light)
@@ -162,6 +180,14 @@ void GraphicsClass::Shutdown()
 		m_LightShader->Shutdown();
 		delete m_LightShader;
 		m_LightShader = 0;
+	}
+
+	// Release the light shader object.
+	if (m_TextureShader)
+	{
+		m_TextureShader->Shutdown();
+		delete m_TextureShader;
+		m_TextureShader = 0;
 	}
 
 	// Release the model object.
@@ -327,17 +353,17 @@ bool GraphicsClass::Render(float rotation)
 		m_Light->GetSpecularColor(), m_Light->GetSpecularPower());
 	if (!result) return false;
 
+
+	//배경의 스카이 박스 부분 (이 오브젝트는 텍스트 셰이더로 랜더합니다.)
 	D3DXMatrixIdentity(&skyBoxScalMatrix);
-	D3DXMatrixScaling(&skyBoxScalMatrix, 250.0f, 250.0f, 250.0f); //D3DClass에 reaterDesc의 cull모드 변경
+	D3DXMatrixScaling(&skyBoxScalMatrix, 500.0f, 500.0f, 500.0f); //D3DClass에 reaterDesc의 cull모드 변경
 	objRotateMatrix[4] *= skyBoxScalMatrix;
 
 	m_Models[4]->Render(m_D3D->GetDeviceContext());
-	// Render the model using the light shader.
-	result = m_LightShader->Render(m_D3D->GetDeviceContext(), m_Models[4]->GetIndexCount(),
+	// Render the model using the texture shader.
+	result = m_TextureShader->Render(m_D3D->GetDeviceContext(), m_Models[4]->GetIndexCount(),
 		objRotateMatrix[4], viewMatrix, projectionMatrix,
-		m_Models[4]->GetTexture(), m_Light->GetDirection(),
-		m_Light->GetAmbientColor(), m_Light->GetDiffuseColor(), m_Camera->GetPosition(),
-		m_Light->GetSpecularColor(), m_Light->GetSpecularPower());
+		m_Models[4]->GetTexture());
 	if (!result) return false;
 
 

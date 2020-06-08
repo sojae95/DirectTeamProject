@@ -166,6 +166,7 @@
     <ClCompile Include="LightClass.cpp" />
     <ClCompile Include="TextClass.cpp" />
     <ClCompile Include="TextureClass.cpp" />
+    <ClCompile Include="textureshaderclass.cpp" />
     <ClCompile Include="Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -184,6 +185,7 @@
     <ClInclude Include="SystemClass.h" />
     <ClInclude Include="TextClass.h" />
     <ClInclude Include="TextureClass.h" />
+    <ClInclude Include="textureshaderclass.h" />
     <ClInclude Include="Timer.h" />
   </ItemGroup>
   <ItemGroup>

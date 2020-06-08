@@ -15,7 +15,7 @@
 #include "lightshaderclass.h"
 #include "lightclass.h"
 #include "TextClass.h"
-
+#include "textureshaderclass.h"
 
 /////////////
 // GLOBALS //
@@ -52,6 +52,8 @@ private:
 	ModelClass* m_spaceship;
 	LightShaderClass* m_LightShader;
 	LightClass* m_Light;
+	TextureShaderClass* m_TextureShader;
+
 
 	bool bIsDLight;
 	bool bIsSLight;

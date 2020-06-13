@@ -41,13 +41,6 @@ public:
 	bool SetCPU(int, ID3D11DeviceContext*);
 	bool SetPoly(int, ID3D11DeviceContext *);
 	bool SetNumOfObjects(int, ID3D11DeviceContext*);
-	bool SetNumOfPolygons(int, ID3D11DeviceContext*);
-	bool SetALightOn(bool bIs, ID3D11DeviceContext * deviceContext);
-	bool SetDLightOn(bool bIs, ID3D11DeviceContext * deviceContext);
-	bool SetSLightOn(bool bIs, ID3D11DeviceContext * deviceContext);
-	bool SetScreenSize(int, int, ID3D11DeviceContext*);
-
-	bool SetPosition(D3DXVECTOR3, ID3D11DeviceContext*);
 
 	void TurnOnOffRenderInfo();
 

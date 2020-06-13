@@ -15,6 +15,7 @@
 #include "lightshaderclass.h"
 #include "lightclass.h"
 #include "TextClass.h"
+#include "BitmapClass.h"
 #include "textureshaderclass.h"
 
 /////////////
@@ -54,11 +55,9 @@ private:
 	LightShaderClass* m_LightShader;
 	LightClass* m_Light;
 	TextureShaderClass* m_TextureShader;
+	BitmapClass	*m_Bitmap, *m_UI;
+	int m_screenHeight, m_screenWidth;
 
-
-	bool bIsDLight;
-	bool bIsSLight;
-	bool bIsALight;
 	int	 m_numOfPolygons;
 };
 #endif

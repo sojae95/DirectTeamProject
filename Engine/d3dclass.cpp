@@ -603,3 +603,15 @@ void D3DClass::TurnOffAlphaBlending()
 	m_deviceContext->OMSetBlendState(m_alphaDisableBlendingState, blendFactor, 0xffffffff);
 	return;
 }
+
+void D3DClass::EnableZBuffer()
+{
+	m_deviceContext->OMSetDepthStencilState(m_depthStencilState, 1);
+	return;
+}
+
+void D3DClass::DisableZBuffer()
+{
+	m_deviceContext->OMSetDepthStencilState(m_depthDisabledStencilState, 1);
+	return;
+}

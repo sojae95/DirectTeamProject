@@ -11,9 +11,8 @@ GraphicsClass::GraphicsClass()
 	m_LightShader = 0;
 	m_TextureShader = 0;
 	m_Light = 0;
-	bIsALight = true;
-	bIsDLight = false;
-	bIsSLight = false;
+	m_screenHeight = 0;
+	m_screenWidth = 0;
 
 }
 
@@ -35,6 +34,8 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd, Inp
 	// Create the Direct3D object.
 	m_Input = pInput;
 
+	m_screenHeight = screenHeight;
+	m_screenWidth = screenWidth;
 	// Create the Direct3D object.
 	m_D3D = new D3DClass;
 	if (!m_D3D)
@@ -136,6 +137,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd, Inp
 		m_objMatrices.push_back(objMat);
 	}
 
+	////////////////////////////// Ui ////////////////////////////////////////////////////////////
 	// Create the text object.
 	m_Text = new TextClass;
 	if (!m_Text)
@@ -150,6 +152,22 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd, Inp
 		MessageBox(hwnd, L"Could not initialize the text object.", L"Error", MB_OK);
 		return false;
 	}
+
+	m_UI = new BitmapClass;
+	if (!m_UI)
+	{
+		return false;
+	}
+	// Initialize the bitmap object.
+	result = m_UI->Initialize(m_D3D->GetDevice(), screenWidth, screenHeight,
+		L"../Engine/data/SpeedUi.dds", screenWidth / 10, screenHeight / 10);
+	if (!result)
+	{
+		MessageBox(hwnd, L"Could not initialize the bitmap object.", L"Error", MB_OK);
+		return false;
+	}
+
+	////////////////////////////// Ui ////////////////////////////////////////////////////////////
 
 	// Create the light shader object.
 	m_LightShader = new LightShaderClass;
@@ -435,7 +453,7 @@ bool GraphicsClass::Render(float rotation)
 	SpaceShipMatrix = mat * ShipView * SpaceShipMatrix;
 
 
-	//Render the player gun
+	//Render the player Ship
 	  m_spaceship->Render(m_D3D->GetDeviceContext());
 	  result = m_LightShader->Render(m_D3D->GetDeviceContext(), m_spaceship->GetIndexCount(),
 		SpaceShipMatrix, viewMatrix, projectionMatrix, m_spaceship->GetTexture(), m_Light->GetDirection(),
@@ -443,7 +461,24 @@ bool GraphicsClass::Render(float rotation)
 		m_Light->GetSpecularColor(), m_Light->GetSpecularPower());
 	if (!result) return false;
 
+	// Turn off the Z buffer to begin all 2D rendering.
+	m_D3D->DisableZBuffer();
+
 	m_D3D->TurnOnAlphaBlending();
+
+
+	result = m_UI->Render(m_D3D->GetDeviceContext(), m_screenWidth / 2, m_screenHeight / 2);
+	if (!result)
+	{
+		return false;
+	}
+
+	result = m_TextureShader->Render(m_D3D->GetDeviceContext(), m_UI->GetIndexCount(),
+		worldMatrix, viewMatrix, orthoMatrix, m_UI->GetTexture());
+	if (!result)
+	{
+		return false;
+	}
 
 	result = m_Text->Render(m_D3D->GetDeviceContext(), worldMatrix, orthoMatrix);
 	if (!result)
@@ -452,6 +487,8 @@ bool GraphicsClass::Render(float rotation)
 	}
 
 	m_D3D->TurnOffAlphaBlending();
+
+	m_D3D->EnableZBuffer();
 
 	m_D3D->EndScene();
 

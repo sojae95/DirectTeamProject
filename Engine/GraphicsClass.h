@@ -55,9 +55,10 @@ private:
 	LightShaderClass* m_LightShader;
 	LightClass* m_Light;
 	TextureShaderClass* m_TextureShader;
-	BitmapClass	*m_Bitmap, *m_UI;
+	BitmapClass	*m_Bitmap;
+	std::vector<BitmapClass*> m_UI;
 	int m_screenHeight, m_screenWidth;
-
+	D3DXMATRIX m_baseViewMatrix;
 	int	 m_numOfPolygons;
 };
 #endif

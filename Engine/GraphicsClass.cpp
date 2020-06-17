@@ -62,10 +62,11 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd, Inp
 	m_Camera->SetPosition(0.0f, 2.0f, -20.0f);
 	m_Camera->Render();
 	m_Camera->GetViewMatrix(baseViewMatrix);
+	m_baseViewMatrix = baseViewMatrix;
 
 	// 객체 수
 	const int NumOfModel = 4;
-
+	const int NumOfUi = 5;
 	// Obj 파일
 	char* fileNames[NumOfModel] = {
 		//"../Engine/data/sword.obj",
@@ -77,6 +78,8 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd, Inp
 		"../Engine/data/mars.obj", // 화성
 		"../Engine/data/Jupiter.obj"  // 목성
 	};
+
+
 
 	// Text 파일
 	WCHAR* textures[NumOfModel] = {
@@ -113,6 +116,23 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd, Inp
 		{ 10.0f, 10.0f, 10.0f},
 		{ 0.5f, 0.5f, 0.5f}
 	};
+
+	WCHAR* Uitextures[NumOfUi] = {
+	L"../Engine/data/SpeedUi.dds", //Speed UI 
+	L"../Engine/data/AltitudeUi.dds", // AltitudeUi
+	L"../Engine/data/CenterUi.dds", // CenterUi
+	L"../Engine/data/LeftUi.dds",  // LeftUi
+	L"../Engine/data/RightUi.dds" // RightUi
+	};
+
+	pair<int, int> UiScales[NumOfUi] = {
+		{ screenWidth / 10, screenHeight / 10},
+		{ screenWidth / 10, screenHeight / 10},
+		{ screenWidth / 10, screenHeight / 10},
+		{ screenWidth / 10, screenHeight / 10},
+		{ screenWidth / 10, screenHeight / 10}
+	};
+
 
 	// Create the model object.
 	D3DXMATRIX objMat, scaleMat;
@@ -153,19 +173,29 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd, Inp
 		return false;
 	}
 
-	m_UI = new BitmapClass;
-	if (!m_UI)
+
+	////////////////////////////// Ui ////////////////////////////////////////////////////////////
+
+
+	for (int i = 0; i < NumOfUi; ++i)
 	{
-		return false;
+		BitmapClass* newUI = new BitmapClass;
+		// Initialize the bitmap object.
+		result = newUI->Initialize(m_D3D->GetDevice(), screenWidth, screenHeight,
+			Uitextures[i], UiScales[i].first, UiScales[i].second);
+		if (!result)
+		{
+			MessageBox(hwnd, L"Could not initialize the bitmap object.", L"Error", MB_OK);
+			return false;
+		}
+
+		m_UI.push_back(newUI);
+		// Initialize the bitmap object.
+	
+
 	}
-	// Initialize the bitmap object.
-	result = m_UI->Initialize(m_D3D->GetDevice(), screenWidth, screenHeight,
-		L"../Engine/data/SpeedUi.dds", screenWidth / 10, screenHeight / 10);
-	if (!result)
-	{
-		MessageBox(hwnd, L"Could not initialize the bitmap object.", L"Error", MB_OK);
-		return false;
-	}
+	
+
 
 	////////////////////////////// Ui ////////////////////////////////////////////////////////////
 
@@ -260,6 +290,17 @@ void GraphicsClass::Shutdown()
 			(*it)->Shutdown();
 			delete (*it);
 			it = m_Models.erase(it);
+		}
+		else ++it;
+	}
+
+	for (auto it = m_UI.begin(); it != m_UI.end(); )
+	{
+		if (*it)
+		{
+			(*it)->Shutdown();
+			delete (*it);
+			it = m_UI.erase(it);
 		}
 		else ++it;
 	}
@@ -467,18 +508,32 @@ bool GraphicsClass::Render(float rotation)
 	m_D3D->TurnOnAlphaBlending();
 
 
-	result = m_UI->Render(m_D3D->GetDeviceContext(), m_screenWidth / 2, m_screenHeight / 2);
-	if (!result)
-	{
-		return false;
-	}
 
-	result = m_TextureShader->Render(m_D3D->GetDeviceContext(), m_UI->GetIndexCount(),
-		worldMatrix, viewMatrix, orthoMatrix, m_UI->GetTexture());
-	if (!result)
-	{
-		return false;
-	}
+	/////////// Ui 렌더 해주는 부분
+	//for (int i = 0; i < m_UI.size(); ++i)
+	//{
+	//	pair<int, int> UiPos[5] = {
+	//	{ m_screenWidth / 2 + 100, m_screenHeight / 2},
+	//	{ m_screenWidth / 2 - 100 , m_screenHeight / 2},
+	//	{ m_screenWidth / 2 , m_screenHeight / 2},
+	//	{ m_screenWidth / 2 , m_screenHeight / 2},
+	//	{ m_screenWidth / 2 , m_screenHeight / 2}
+	//	};
+
+	//	result = m_UI[i]->Render(m_D3D->GetDeviceContext(), UiPos[i].first, UiPos[i].second);
+	//	if (!result)
+	//	{
+	//		return false;
+	//	}
+
+	//	result = m_TextureShader->Render(m_D3D->GetDeviceContext(), m_UI[i]->GetIndexCount(),
+	//		worldMatrix, m_baseViewMatrix, orthoMatrix, m_UI[i]->GetTexture());
+	//	if (!result)
+	//	{
+	//		return false;
+	//	}
+	//}
+
 
 	result = m_Text->Render(m_D3D->GetDeviceContext(), worldMatrix, orthoMatrix);
 	if (!result)

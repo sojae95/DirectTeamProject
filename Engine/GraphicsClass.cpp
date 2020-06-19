@@ -363,7 +363,8 @@ bool GraphicsClass::Frame(int fps, float frameTime, int cpu, int screenWidth, in
 	m_Camera->Yaw(deltaX * frameTime * 0.00018f);
 	m_Camera->Pitch(deltaY * frameTime * 0.00018f);
 
-
+	if (m_Input->GetKey(KeyCode::Q)) m_Camera->MoveUpDown(dir * frameTime);
+	if (m_Input->GetKey(KeyCode::E)) m_Camera->MoveUpDown(-dir * frameTime);
 	if (m_Input->GetKey(KeyCode::W)) m_Camera->MoveForward(dir * frameTime);
 	if (m_Input->GetKey(KeyCode::A)) m_Camera->Strafe(-dir * frameTime);
 	if (m_Input->GetKey(KeyCode::S)) m_Camera->MoveForward(-dir * frameTime);

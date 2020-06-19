@@ -8,7 +8,7 @@
 CameraClass::CameraClass()
 {
 	m_maxYaw = D3DXToRadian(.0f);
-	m_maxPitch = D3DXToRadian(5.0f);
+	m_maxPitch = D3DXToRadian(7.0f);
 	m_maxVelocity = 1.0f;
 	m_speed = 1.0f;
 	m_invertY = FALSE;
@@ -48,6 +48,11 @@ void CameraClass::MoveForward(float units)
 void CameraClass::Strafe(float units)
 {
 	m_velocity += m_right * units;
+}
+
+void CameraClass::MoveUpDown(float units)
+{
+	m_velocity += m_up * units;
 }
 
 void CameraClass::Yaw(float radians)

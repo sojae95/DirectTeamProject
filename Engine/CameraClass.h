@@ -23,6 +23,7 @@ public:
 
 	void MoveForward(float units);
 	void Strafe(float units);
+	void MoveUpDown(float units);
 	void Yaw(float radians);
 	void Pitch(float radians);
 

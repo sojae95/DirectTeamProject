@@ -65,7 +65,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd, Inp
 	m_baseViewMatrix = baseViewMatrix;
 
 	// 객체 수
-	const int NumOfModel = 4;
+	const int NumOfModel = 7;
 	const int NumOfUi = 5;
 	// Obj 파일
 	char* fileNames[NumOfModel] = {
@@ -74,9 +74,12 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd, Inp
 		//"../Engine/data/M1911.obj",
 		//"../Engine/data/cube.obj",
 		"../Engine/data/SkyBoxTestCube.obj", //배경 
-		"../Engine/data/Earth.obj", // 지구
+		"../Engine/data/mars.obj", // 지구
 		"../Engine/data/mars.obj", // 화성
-		"../Engine/data/Jupiter.obj"  // 목성
+		"../Engine/data/mars.obj",  // 목성
+		"../Engine/data/mars.obj", // 태양
+		"../Engine/data/mars.obj", // 수성
+		"../Engine/data/mars.obj" // 금성
 	};
 
 
@@ -90,7 +93,10 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd, Inp
 		L"../Engine/data/SpaceBackGround.dds", // 배경 텍스처
 		L"../Engine/data/earth.dds",  // 지구 텍스처
 		L"../Engine/data/mars.dds",  // 화성 텍스처
-		L"../Engine/data/Jupiter_diff.dds"   // 목성 텍스처 
+		L"../Engine/data/Jupiter_diff.dds",   // 목성 텍스처 
+		L"../Engine/data/sun.dds", // 태양
+		L"../Engine/data/mercury.dds", // 수성
+		L"../Engine/data/venus.dds" // 금성
 
 	};
 
@@ -100,9 +106,12 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd, Inp
 		//{ 0.0f, 0.0f, 0.0f},
 		//{ 0.0f, 0.0f, 0.0f},
 		{ 0.0f, 0.0f, 0.0f},
-		{ 0.0f, 0.0f, -500.0f},
-		{ 0.0f, 0.0f, 500.0f},
-		{ 0.0f, 0.0f, 1000.0f}
+		{ 0.0f, 0.0f, -500.0f}, // 지구
+		{ 0.0f, 0.0f, 500.0f},  // 화성
+		{ 0.0f, 0.0f, 1000.0f}, // 목성
+		{0.0f, 0.0f, -1500.0f}, // 태양
+		{0.0f, 0.0f, -900},     // 수성
+		{0.0f, 0.0f, -750}      // 금성
 	};
 
 	// 크기를 
@@ -112,9 +121,13 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd, Inp
 		//{ 1.0f, 1.0f, 1.0f},
 		//{ 1.0f, 1.0f, 1.0f},
 		{ 3000.0f, 3000.0f, 3000.0f},
-		{ 0.2f, 0.2f, 0.2f},
-		{ 10.0f, 10.0f, 10.0f},
-		{ 0.5f, 0.5f, 0.5f}
+		{ 20.0f, 20.0f, 20.0f},   // 지구
+		{ 10.0f, 10.0f, 10.0f},   // 화성
+		{ 50.0f, 50.0f, 50.0f},   // 목성
+		{ 100.0f, 100.0f, 100.0f},   // 태양
+		{ 10.0f, 10.0f, 10.0f},   // 수성
+		{ 20.0f, 20.0f, 20.0f}    // 금성
+
 	};
 
 	WCHAR* Uitextures[NumOfUi] = {
@@ -434,7 +447,7 @@ bool GraphicsClass::Render(float rotation)
 			D3DXMatrixRotationX(&rotMatX, rotX);
 			D3DXMatrixRotationY(&rotMatY, rotY);
 
-			if (i==1 || i==2 || i==3) // (1번 - 지구, 2번 - 화성, 3번 - 목성) 회전 행렬 적용 부분입니다. 
+			if (i!=0) // (1번 - 지구, 2번 - 화성, 3번 - 목성) 회전 행렬 적용 부분입니다. 
 			{
 				D3DXMatrixMultiply(&objMat, &rotMatY, &objMat);
 			}

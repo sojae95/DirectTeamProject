@@ -17,7 +17,7 @@
 #include "TextClass.h"
 #include "BitmapClass.h"
 #include "textureshaderclass.h"
-
+#include "SoundClass.h"
 /////////////
 // GLOBALS //
 /////////////
@@ -60,5 +60,7 @@ private:
 	int m_screenHeight, m_screenWidth;
 	D3DXMATRIX m_baseViewMatrix;
 	int	 m_numOfPolygons;
+	SoundClass *m_BackGroundSound;
+
 };
 #endif

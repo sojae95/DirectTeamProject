@@ -13,7 +13,7 @@ GraphicsClass::GraphicsClass()
 	m_Light = 0;
 	m_screenHeight = 0;
 	m_screenWidth = 0;
-
+	m_BackGroundSound = 0;
 }
 
 
@@ -131,19 +131,19 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd, Inp
 	};
 
 	WCHAR* Uitextures[NumOfUi] = {
-	L"../Engine/data/SpeedUi.dds", //Speed UI 
-	L"../Engine/data/AltitudeUi.dds", // AltitudeUi
-	L"../Engine/data/CenterUi.dds", // CenterUi
-	L"../Engine/data/LeftUi.dds",  // LeftUi
-	L"../Engine/data/RightUi.dds" // RightUi
+		L"../Engine/data/UI1.dds", //Speed UI 
+		L"../Engine/data/UI2.dds", // AltitudeUi
+		L"../Engine/data/UI3.dds", // CenterUi
+		L"../Engine/data/UI4.dds",  // LeftUi
+		L"../Engine/data/UI81924096.dds" // RightUi
 	};
 
 	pair<int, int> UiScales[NumOfUi] = {
-		{ screenWidth / 10, screenHeight / 10},
-		{ screenWidth / 10, screenHeight / 10},
-		{ screenWidth / 10, screenHeight / 10},
-		{ screenWidth / 10, screenHeight / 10},
-		{ screenWidth / 10, screenHeight / 10}
+		{ screenWidth , screenHeight },
+		{ screenWidth , screenHeight },
+		{ screenWidth , screenHeight },
+		{ screenWidth , screenHeight },
+		{ screenWidth , screenHeight }
 	};
 
 
@@ -186,9 +186,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd, Inp
 		return false;
 	}
 
-
 	////////////////////////////// Ui ////////////////////////////////////////////////////////////
-
 
 	for (int i = 0; i < NumOfUi; ++i)
 	{
@@ -208,8 +206,6 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd, Inp
 
 	}
 	
-
-
 	////////////////////////////// Ui ////////////////////////////////////////////////////////////
 
 	// Create the light shader object.
@@ -263,6 +259,24 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd, Inp
 	if (!result)
 	{
 		MessageBox(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
+		return false;
+	}
+
+	m_BackGroundSound = new SoundClass;
+
+	if (!m_BackGroundSound) {
+		return false;
+	}
+
+	result = m_BackGroundSound->Initialize(hwnd, "../Engine/data/BGM.wav");
+
+	if (!result) {
+		return false;
+	}
+
+	result =  m_BackGroundSound->PlayWaveFile(-1000, true);
+	//m_BackGroundSound->PlayWaveFile(-2000, true);
+	if (!result) {
 		return false;
 	}
 
@@ -338,6 +352,13 @@ void GraphicsClass::Shutdown()
 		m_Text->Shutdown();
 		delete m_Text;
 		m_Text = 0;
+	}
+
+	if (m_BackGroundSound)
+	{
+		m_BackGroundSound->Shutdown();
+		delete m_BackGroundSound;
+		m_BackGroundSound = 0;
 	}
 
 	return;
@@ -465,7 +486,7 @@ bool GraphicsClass::Render(float rotation)
 			//if (!result) { return false; }
 
 			//배경의 스카이 박스 부분 (이 오브젝트는 텍스트 셰이더로 랜더합니다.)
-			if (i == 0)
+			if (i == 0 || i ==4)
 			{
 				result = m_TextureShader->Render(m_D3D->GetDeviceContext(), m_Models[i]->GetIndexCount(),
 					objMat, viewMatrix, projectionMatrix,
@@ -523,29 +544,29 @@ bool GraphicsClass::Render(float rotation)
 
 
 
-	/////////// Ui 렌더 해주는 부분
+	///////// Ui 렌더 해주는 부분
 	//for (int i = 0; i < m_UI.size(); ++i)
 	//{
-	//	pair<int, int> UiPos[5] = {
-	//	{ m_screenWidth / 2 + 100, m_screenHeight / 2},
-	//	{ m_screenWidth / 2 - 100 , m_screenHeight / 2},
-	//	{ m_screenWidth / 2 , m_screenHeight / 2},
-	//	{ m_screenWidth / 2 , m_screenHeight / 2},
-	//	{ m_screenWidth / 2 , m_screenHeight / 2}
-	//	};
+		//pair<int, int> UiPos[5] = {
+		//{ m_screenWidth / 2 + 100, m_screenHeight / 2},
+		//{ m_screenWidth / 2 - 100 , m_screenHeight / 2},
+		//{ m_screenWidth / 2 , m_screenHeight / 2},
+		//{ m_screenWidth / 2 , m_screenHeight / 2},
+		//{ m_screenWidth / 2 , m_screenHeight / 2}
+		//};
 
-	//	result = m_UI[i]->Render(m_D3D->GetDeviceContext(), UiPos[i].first, UiPos[i].second);
-	//	if (!result)
-	//	{
-	//		return false;
-	//	}
+		result = m_UI[0]->Render(m_D3D->GetDeviceContext(), 0,0);
+		if (!result)
+		{
+			return false;
+		}
 
-	//	result = m_TextureShader->Render(m_D3D->GetDeviceContext(), m_UI[i]->GetIndexCount(),
-	//		worldMatrix, m_baseViewMatrix, orthoMatrix, m_UI[i]->GetTexture());
-	//	if (!result)
-	//	{
-	//		return false;
-	//	}
+		result = m_TextureShader->Render(m_D3D->GetDeviceContext(), m_UI[0]->GetIndexCount(),
+			worldMatrix, m_baseViewMatrix, orthoMatrix, m_UI[0]->GetTexture());
+		if (!result)
+		{
+			return false;
+		}
 	//}
 
 

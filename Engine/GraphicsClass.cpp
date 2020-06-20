@@ -135,7 +135,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd, Inp
 		L"../Engine/data/UI2.dds", // AltitudeUi
 		L"../Engine/data/UI3.dds", // CenterUi
 		L"../Engine/data/UI4.dds",  // LeftUi
-		L"../Engine/data/UI81924096.dds" // RightUi
+		L"../Engine/data/UI1.dds" // RightUi
 	};
 
 	pair<int, int> UiScales[NumOfUi] = {

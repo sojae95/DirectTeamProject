@@ -63,13 +63,13 @@ bool TextClass::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceCont
 	m_renderInfo.reserve(7);
 
 	const SentenceData datas[] = {
-		{ "", 200, 90,  1.0f, 1.0f, 1.0f}, //FPS
-		{ "", 200, 110,  1.0f, 1.0f, 1.0f}, // CPU
-		{ "", 200, 130,  1.0f, 1.0f, 1.0f},  // POLY
-		{ "", 200, 150,  1.0f, 1.0f, 1.0f}, // objectNum
-		{ "", 270, 295, 1.0f, 1.0f, 1.0f}, // speed
-		{ "", 490, 295, 1.0f, 1.0f, 1.0f}, // hight
-		{ "", 200, 170, 1.0f, 1.0f, 1.0f}  // screen
+		{ "", 650, 180,  1.0f, 1.0f, 1.0f}, //FPS
+		{ "", 650, 200,  1.0f, 1.0f, 1.0f}, // CPU
+		{ "", 650, 220,  1.0f, 1.0f, 1.0f},  // POLY
+		{ "", 650, 240,  1.0f, 1.0f, 1.0f}, // objectNum
+		{ "", 1125, 535, 1.0f, 1.0f, 1.0f}, // speed
+		{ "", 780, 535, 1.0f, 1.0f, 1.0f}, // hight
+		{ "", 650, 260, 1.0f, 1.0f, 1.0f}  // screen
 	};
 
 	for (int i = 0; i < m_renderInfo.capacity(); ++i)
@@ -610,7 +610,7 @@ bool TextClass::SetScreen(int screenWidth,int screenHeight ,ID3D11DeviceContext*
 
 	strcat_s(ScreenString, tempString);
 
-	sentence = m_renderInfo[5];
+	sentence = m_renderInfo[6];
 	// Update the sentence vertex buffer with the new string information.
 	result = UpdateSentence(sentence, ScreenString,
 		sentence->x, sentence->y, 0.0f, 1.0f, 0.0f, deviceContext);

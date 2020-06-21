@@ -60,7 +60,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd, Inp
 	}
 
 	// Set the initial position of the camera.
-	m_Camera->SetPosition(0.0f, 2.0f, -20.0f);
+	m_Camera->SetPosition(0.0f, 2.0f, -300.0f);
 	m_Camera->Render();
 	m_Camera->GetViewMatrix(baseViewMatrix);
 	m_baseViewMatrix = baseViewMatrix;
@@ -107,12 +107,12 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd, Inp
 		//{ 0.0f, 0.0f, 0.0f},
 		//{ 0.0f, 0.0f, 0.0f},
 		{ 0.0f, 0.0f, 0.0f},
-		{ 0.0f, 0.0f, -500.0f}, // 瘤备
+		{ 0.0f, 0.0f, -450.0f}, // 瘤备
 		{ 0.0f, 0.0f, 500.0f},  // 拳己
-		{ 0.0f, 0.0f, 1000.0f}, // 格己
+		{ -100.0f, 0.0f, 1000.0f}, // 格己
 		{0.0f, 0.0f, -1500.0f}, // 怕剧
-		{0.0f, 0.0f, -900},     // 荐己
-		{0.0f, 0.0f, -750}      // 陛己
+		{-50.0f, 0.0f, -900},     // 荐己
+		{100.0f, 0.0f, -750}      // 陛己
 	};
 
 	// 农扁甫 
@@ -197,7 +197,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd, Inp
 
 	m_D3D->GetWorldMatrix(worldMatrix);
 
-	D3DXMatrixScaling(&m_TextMatrix, 2.f, 1.4f, 0.0f);
+	D3DXMatrixScaling(&m_TextMatrix, 3.f, 1.4f, 0.0f);
 	D3DXMatrixMultiply(&m_TextMatrix, &m_TextMatrix, &worldMatrix);
 
 	////////////////////////////// Ui ////////////////////////////////////////////////////////////
@@ -263,7 +263,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd, Inp
 	// Initialize the light object.
 	m_Light->SetAmbientColor(0.15f, 0.15f, 0.15f, 1.0f);
 	m_Light->SetDiffuseColor(1.0f, 1.0f, 1.0f, 1.0f);
-	m_Light->SetDirection(-0.5f, -2.0f, 0.0f);
+	m_Light->SetDirection(-0.5f, -2.0f, 3.0f);
 	m_Light->SetSpecularColor(1.0f, 1.0f, 1.0f, 1.0f);
 	m_Light->SetSpecularPower(30.0f);
 
@@ -452,7 +452,7 @@ bool GraphicsClass::Frame(int fps, float frameTime, int cpu, int screenWidth, in
 
 	float fHeight = m_Camera->GetPosition().y;
 
-	result = m_Text->SetHeight(fHeight, m_D3D->GetDeviceContext());
+	result = m_Text->SetHeight(fHeight +1000.0f, m_D3D->GetDeviceContext());
 	if (!result)
 	{
 		return false;

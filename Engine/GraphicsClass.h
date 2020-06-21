@@ -21,7 +21,7 @@
 /////////////
 // GLOBALS //
 /////////////
-const bool FULL_SCREEN = false;
+const bool FULL_SCREEN = true;
 const bool VSYNC_ENABLED = true;
 const float SCREEN_DEPTH = 5000.0f;
 const float SCREEN_NEAR = 0.1f;
@@ -41,6 +41,7 @@ public:
 	void Shutdown();
 	bool Frame(int, float, int, int, int);
 
+	void getDamage();
 private:
 	bool Render(float);
 
@@ -61,6 +62,6 @@ private:
 	D3DXMATRIX m_baseViewMatrix;
 	int	 m_numOfPolygons;
 	SoundClass *m_BackGroundSound;
-
+	int uiNum;
 };
 #endif

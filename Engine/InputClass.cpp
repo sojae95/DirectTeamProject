@@ -26,7 +26,8 @@ InputClass::InputClass()
 		{ KeyCode::THREE,	DIK_3 },
 		{ KeyCode::SPACE, DIK_SPACE},
 		{ KeyCode::Q,		DIK_Q },
-		{ KeyCode::E,		DIK_E }
+		{ KeyCode::E,		DIK_E },
+		{ KeyCode::T,		DIK_T }
 	};
 }
 

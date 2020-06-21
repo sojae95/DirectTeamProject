@@ -14,6 +14,7 @@ GraphicsClass::GraphicsClass()
 	m_screenHeight = 0;
 	m_screenWidth = 0;
 	m_BackGroundSound = 0;
+	uiNum = 0;
 }
 
 
@@ -129,6 +130,10 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd, Inp
 		{ 20.0f, 20.0f, 20.0f}    // 금성
 
 	};
+
+	// UI 번호 1 --> 4
+	// HP      3 --> 0
+	// UI시리즈는 연두색 , UI_ 시리즈는 초록색
 
 	WCHAR* Uitextures[NumOfUi] = {
 		L"../Engine/data/UI1.dds", //Speed UI 
@@ -391,6 +396,9 @@ bool GraphicsClass::Frame(int fps, float frameTime, int cpu, int screenWidth, in
 	if (m_Input->GetKey(KeyCode::S)) m_Camera->MoveForward(-dir * frameTime);
 	if (m_Input->GetKey(KeyCode::D)) m_Camera->Strafe(dir * frameTime);
 
+	//UI 바뀌는거 확인하는 키
+	if (m_Input->GetKey(KeyCode::T)) getDamage();
+
 	if (m_Input->GetKey(KeyCode::SPACE)) { m_Camera->SetSpeed(cameraSpeed * 1.2f); }
 	else { m_Camera->SetSpeed(cameraSpeed); }
 
@@ -555,14 +563,16 @@ bool GraphicsClass::Render(float rotation)
 		//{ m_screenWidth / 2 , m_screenHeight / 2}
 		//};
 
-		result = m_UI[0]->Render(m_D3D->GetDeviceContext(), 0,0);
+
+
+		result = m_UI[uiNum]->Render(m_D3D->GetDeviceContext(), 0,0);
 		if (!result)
 		{
 			return false;
 		}
 
-		result = m_TextureShader->Render(m_D3D->GetDeviceContext(), m_UI[0]->GetIndexCount(),
-			worldMatrix, m_baseViewMatrix, orthoMatrix, m_UI[0]->GetTexture());
+		result = m_TextureShader->Render(m_D3D->GetDeviceContext(), m_UI[uiNum]->GetIndexCount(),
+			worldMatrix, m_baseViewMatrix, orthoMatrix, m_UI[uiNum]->GetTexture());
 		if (!result)
 		{
 			return false;
@@ -583,4 +593,11 @@ bool GraphicsClass::Render(float rotation)
 	m_D3D->EndScene();
 
 	return true;
+}
+
+void GraphicsClass::getDamage() {
+	uiNum++;
+
+	if (uiNum > 3)
+		uiNum = 0;
 }

@@ -41,7 +41,6 @@ public:
 	void Shutdown();
 	bool Frame(int, float, int, int, int);
 
-	void getDamage();
 private:
 	bool Render(float);
 
@@ -61,7 +60,12 @@ private:
 	int m_screenHeight, m_screenWidth;
 	D3DXMATRIX m_baseViewMatrix;
 	int	 m_numOfPolygons;
+	int  m_numOfObject;
+	D3DXMATRIX m_TextMatrix;
 	SoundClass *m_BackGroundSound;
-	int uiNum;
+	bool m_bIsTextControl;
+	
+
+
 };
 #endif

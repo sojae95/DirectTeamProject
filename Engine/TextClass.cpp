@@ -63,13 +63,13 @@ bool TextClass::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceCont
 	m_renderInfo.reserve(7);
 
 	const SentenceData datas[] = {
-		{ "", 20, 20,  1.0f, 1.0f, 1.0f},
-		{ "", 20, 40,  1.0f, 1.0f, 1.0f},
-		{ "", 20, 60,  1.0f, 1.0f, 1.0f},
-		{ "", 20, 80,  1.0f, 1.0f, 1.0f},
-		{ "", 20, 100, 1.0f, 1.0f, 1.0f},
-		{ "", 20, 120, 1.0f, 1.0f, 1.0f},
-		{ "", 20, 140, 1.0f, 1.0f, 1.0f}
+		{ "", 200, 90,  1.0f, 1.0f, 1.0f}, //FPS
+		{ "", 200, 110,  1.0f, 1.0f, 1.0f}, // CPU
+		{ "", 200, 130,  1.0f, 1.0f, 1.0f},  // POLY
+		{ "", 200, 150,  1.0f, 1.0f, 1.0f}, // objectNum
+		{ "", 270, 295, 1.0f, 1.0f, 1.0f}, // speed
+		{ "", 490, 295, 1.0f, 1.0f, 1.0f}, // hight
+		{ "", 200, 170, 1.0f, 1.0f, 1.0f}  // screen
 	};
 
 	for (int i = 0; i < m_renderInfo.capacity(); ++i)
@@ -532,9 +532,87 @@ bool TextClass::SetNumOfObjects(int num, ID3D11DeviceContext* deviceContext)
 	strcpy_s(numString, "Objects: ");
 	strcat_s(numString, tempString);
 
-	sentence = m_renderInfo[2];
+	sentence = m_renderInfo[3];
 	// Update the sentence vertex buffer with the new string information.
 	result = UpdateSentence(sentence, numString,
+		sentence->x, sentence->y, 0.0f, 1.0f, 0.0f, deviceContext);
+	if (!result)
+	{
+		return false;
+	}
+	return true;
+}
+
+
+bool TextClass::SetSpeed(int cpu, ID3D11DeviceContext* deviceContext)
+{
+	char tempString[16];
+	char cpuString[16];
+	SentenceType *sentence;
+	bool result;
+	// Convert the cpu integer to string format.
+	_itoa_s(cpu, tempString, 10);
+	// Setup the cpu string.
+	strcpy_s(cpuString, "");
+	strcat_s(cpuString, tempString);
+	strcat_s(cpuString, "%");
+
+	sentence = m_renderInfo[4];
+	// Update the sentence vertex buffer with the new string information.
+	result = UpdateSentence(sentence, cpuString,
+		sentence->x, sentence->y, 0.0f, 1.0f, 0.0f, deviceContext);
+	if (!result)
+	{
+		return false;
+	}
+	return true;
+}
+
+
+bool TextClass::SetHeight(int Height, ID3D11DeviceContext* deviceContext)
+{
+	char tempString[16];
+	char cpuString[16];
+	SentenceType *sentence;
+	bool result;
+	// Convert the cpu integer to string format.
+	_itoa_s(Height, tempString, 10);
+	// Setup the cpu string.
+	strcpy_s(cpuString, "");
+	strcat_s(cpuString, tempString);
+	strcat_s(cpuString, "");
+
+	sentence = m_renderInfo[5];
+	// Update the sentence vertex buffer with the new string information.
+	result = UpdateSentence(sentence, cpuString,
+		sentence->x, sentence->y, 0.0f, 1.0f, 0.0f, deviceContext);
+	if (!result)
+	{
+		return false;
+	}
+	return true;
+}
+
+bool TextClass::SetScreen(int screenWidth,int screenHeight ,ID3D11DeviceContext* deviceContext)
+{
+	char tempString[32];
+	char ScreenString[32];
+	SentenceType *sentence;
+	bool result;
+	// Convert the cpu integer to string format.
+	_itoa_s(screenWidth, tempString, 10);
+	// Setup the cpu string.
+	strcpy_s(ScreenString, "");
+	strcat_s(ScreenString, tempString);
+	strcat_s(ScreenString, " X ");
+
+	_itoa_s(screenHeight, tempString, 10);
+
+	strcat_s(ScreenString, tempString);
+
+	sentence = m_renderInfo[5];
+	// Update the sentence vertex buffer with the new string information.
+	result = UpdateSentence(sentence, ScreenString,
 		sentence->x, sentence->y, 0.0f, 1.0f, 0.0f, deviceContext);
 	if (!result)
 	{

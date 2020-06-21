@@ -41,6 +41,11 @@ public:
 	bool SetCPU(int, ID3D11DeviceContext*);
 	bool SetPoly(int, ID3D11DeviceContext *);
 	bool SetNumOfObjects(int, ID3D11DeviceContext*);
+	bool SetSpeed(int, ID3D11DeviceContext*);
+	bool SetHeight(int, ID3D11DeviceContext*);
+
+	bool SetScreen(int, int, ID3D11DeviceContext*);
+
 
 	void TurnOnOffRenderInfo();
 

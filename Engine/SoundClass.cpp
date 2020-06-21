@@ -197,7 +197,9 @@ bool SoundClass::LoadWaveFile(const char* filename, IDirectSoundBuffer8** second
 	bufferDesc.dwBufferBytes = waveFileHeader.dataSize;
 	bufferDesc.dwReserved = 0;
 	bufferDesc.lpwfxFormat = &waveFormat;
-	bufferDesc.guid3DAlgorithm = GUID_NULL;	// Create a temporary sound buffer with the specific buffer settings.
+	bufferDesc.guid3DAlgorithm = GUID_NULL;
+
+	// Create a temporary sound buffer with the specific buffer settings.
 	result = m_DirectSound->CreateSoundBuffer(&bufferDesc, &tempBuffer, NULL);
 	if (FAILED(result))
 	{

@@ -14,6 +14,8 @@ GraphicsClass::GraphicsClass()
 	m_screenHeight = 0;
 	m_screenWidth = 0;
 	m_BackGroundSound = 0;
+	m_Col = 0;
+	m_iHp = 3;
 	
 }
 
@@ -66,80 +68,85 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd, Inp
 	m_baseViewMatrix = baseViewMatrix;
 
 	// 객체 수
-	const int NumOfModel = 7;
+	const int NumOfModel = 8;
 	const int NumOfUi = 5;
 	// Obj 파일
 	char* fileNames[NumOfModel] = {
-		//"../Engine/data/sword.obj",
-		//"../Engine/data/doll.obj",
-		//"../Engine/data/M1911.obj",
-		//"../Engine/data/cube.obj",
 		"../Engine/data/SkyBoxTestCube.obj", //배경 
 		"../Engine/data/mars.obj", // 지구
 		"../Engine/data/mars.obj", // 화성
 		"../Engine/data/mars.obj",  // 목성
 		"../Engine/data/mars.obj", // 태양
 		"../Engine/data/mars.obj", // 수성
-		"../Engine/data/mars.obj" // 금성
+		"../Engine/data/mars.obj", // 금성
+		"../Engine/data/Asteroid1.obj" // 소행성
 	};
 
 
 
 	// Text 파일
 	WCHAR* textures[NumOfModel] = {
-		//L"../Engine/data/t_sword.dds",
-		//L"../Engine/data/t_doll.dds",
-		//L"../Engine/data/t_M1911.dds",
-		//L"../Engine/data/seafloor.dds",
 		L"../Engine/data/SpaceBackGround.dds", // 배경 텍스처
 		L"../Engine/data/earth.dds",  // 지구 텍스처
 		L"../Engine/data/mars.dds",  // 화성 텍스처
 		L"../Engine/data/Jupiter_diff.dds",   // 목성 텍스처 
 		L"../Engine/data/sun.dds", // 태양
 		L"../Engine/data/mercury.dds", // 수성
-		L"../Engine/data/venus.dds" // 금성
+		L"../Engine/data/venus.dds", // 금성
+		L"../Engine/data/Asteroid.dds" // 소행성
 
 	};
 
 	D3DXVECTOR3 positions[] = {
-		//{ 0.0f, 0.0f, 0.0f},
-		//{ 0.0f, 0.0f, 0.0f},
-		//{ 0.0f, 0.0f, 0.0f},
-		//{ 0.0f, 0.0f, 0.0f},
 		{ 0.0f, 0.0f, 0.0f},
 		{ 0.0f, 0.0f, -450.0f}, // 지구
 		{ 0.0f, 0.0f, 500.0f},  // 화성
 		{ -100.0f, 0.0f, 1000.0f}, // 목성
 		{0.0f, 0.0f, -1500.0f}, // 태양
 		{-50.0f, 0.0f, -900},     // 수성
-		{100.0f, 0.0f, -750}      // 금성
+		{100.0f, 0.0f, -750},      // 금성
+		{0.0f, 0.0f, 0.0f}	// 소행성
 	};
 
 	// 크기를 
 	D3DXVECTOR3 scales[] = {
-		//{ 1.0f, 1.0f, 1.0f},
-		//{ 1.0f, 1.0f, 1.0f},
-		//{ 1.0f, 1.0f, 1.0f},
-		//{ 1.0f, 1.0f, 1.0f},
 		{ 3000.0f, 3000.0f, 3000.0f},
 		{ 20.0f, 20.0f, 20.0f},   // 지구
 		{ 10.0f, 10.0f, 10.0f},   // 화성
 		{ 50.0f, 50.0f, 50.0f},   // 목성
 		{ 100.0f, 100.0f, 100.0f},   // 태양
 		{ 10.0f, 10.0f, 10.0f},   // 수성
-		{ 20.0f, 20.0f, 20.0f}    // 금성
+		{ 20.0f, 20.0f, 20.0f},    // 금성
+		{ 0.1f, 0.1f, 0.1f},    // 소행성
 
 	};
+
+	float radius[] = {
+		{ 3000.0f},
+		{ 10.0f},  // 화성
+		{ 20.0f},  // 지구
+		{ 50.0f},  // 목성
+		{ 100.0f}, // 태양
+		{ 10.0f},  // 수성
+		{ 20.0f},  // 금성
+		{ 3.0f},   // 소행성
+
+	};
+
+	for (int j = 0; j < NumOfModel; ++j)
+	{
+		m_radius[j] = radius[j];
+	}
 
 	// UI 번호 1 --> 4
 	// HP      3 --> 0
 	// UI시리즈는 연두색 , UI_ 시리즈는 초록색
 
 	WCHAR* Uitextures[NumOfUi] = {
-		L"../Engine/data/UI1.dds", //Speed UI 
-		L"../Engine/data/UI2.dds", // AltitudeUi
-		L"../Engine/data/UI3.dds", // CenterUi
-		L"../Engine/data/UI4.dds",  // LeftUi
+		L"../Engine/data/UI4.dds", //Speed UI 
+		L"../Engine/data/UI3.dds", // AltitudeUi
+		L"../Engine/data/UI2.dds", // CenterUi
+		L"../Engine/data/UI1.dds",  // LeftUi
 		L"../Engine/data/UI1.dds" // RightUi
 	};
 
@@ -221,6 +228,12 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd, Inp
 	}
 	
 	////////////////////////////// Ui ////////////////////////////////////////////////////////////
+
+	m_Col = new ColliderClass;
+	if (!m_Col)
+	{
+		return false;
+	}
 
 	// Create the light shader object.
 	m_LightShader = new LightShaderClass;
@@ -375,6 +388,12 @@ void GraphicsClass::Shutdown()
 		m_BackGroundSound = 0;
 	}
 
+	if (m_Col)
+	{
+		delete m_Col;
+		m_Col = 0;
+	}
+
 	return;
 }
 
@@ -499,7 +518,7 @@ bool GraphicsClass::Render(float rotation)
 		// Set the radius of the sphere to 1.0 since this is already known.
 		const float radius = 1.0f;
 		// Check if the sphere model is in the view frustum.
-		bool renderModel = true;//m_Frustum->CheckSphere(m_objMatrices[i]._41, m_objMatrices[i]._42, m_objMatrices[i]._43, radius);
+		bool renderModel = true;
 		// If it can be seen then render it, if not skip this model and check the next sphere.
 		if (renderModel)
 		{
@@ -516,6 +535,28 @@ bool GraphicsClass::Render(float rotation)
 			if (i!=0) // (1번 - 지구, 2번 - 화성, 3번 - 목성) 회전 행렬 적용 부분입니다. 
 			{
 				D3DXMatrixMultiply(&objMat, &rotMatY, &objMat);
+			}
+
+			// 충돌  
+			if (i > 6) // 소행성은 7 ~ 만들 예정
+			{
+
+
+				if (m_Col->ColliderCheck(objMat, m_Camera->GetPosition(), m_radius[i]))
+				{
+
+
+
+
+					if (m_iHp > 0)
+					{
+						m_iHp--;
+					}
+				}
+
+
+
+
 			}
 
 			m_Models[i]->Render(m_D3D->GetDeviceContext());
@@ -586,34 +627,18 @@ bool GraphicsClass::Render(float rotation)
 
 	m_D3D->TurnOnAlphaBlending();
 
+	result = m_UI[m_iHp]->Render(m_D3D->GetDeviceContext(), 0, 0);
+	if (!result)
+	{
+		return false;
+	}
 
-
-	///////// Ui 렌더 해주는 부분
-	//for (int i = 0; i < m_UI.size(); ++i)
-	//{
-		//pair<int, int> UiPos[5] = {
-		//{ m_screenWidth / 2 + 100, m_screenHeight / 2},
-		//{ m_screenWidth / 2 - 100 , m_screenHeight / 2},
-		//{ m_screenWidth / 2 , m_screenHeight / 2},
-		//{ m_screenWidth / 2 , m_screenHeight / 2},
-		//{ m_screenWidth / 2 , m_screenHeight / 2}
-		//};
-
-
-
-		result = m_UI[0]->Render(m_D3D->GetDeviceContext(), 0,0);
-		if (!result)
-		{
-			return false;
-		}
-
-		result = m_TextureShader->Render(m_D3D->GetDeviceContext(), m_UI[0]->GetIndexCount(),
-			worldMatrix, m_baseViewMatrix, orthoMatrix, m_UI[0]->GetTexture());
-		if (!result)
-		{
-			return false;
-		}
-	//}
+	result = m_TextureShader->Render(m_D3D->GetDeviceContext(), m_UI[m_iHp]->GetIndexCount(),
+		worldMatrix, m_baseViewMatrix, orthoMatrix, m_UI[m_iHp]->GetTexture());
+	if (!result)
+	{
+		return false;
+	}
 
 
 	result = m_Text->Render(m_D3D->GetDeviceContext(), m_TextMatrix, orthoMatrix);

@@ -18,10 +18,11 @@
 #include "BitmapClass.h"
 #include "textureshaderclass.h"
 #include "SoundClass.h"
+#include "ColliderClass.h"
 /////////////
 // GLOBALS //
 /////////////
-const bool FULL_SCREEN = true;
+const bool FULL_SCREEN = false;
 const bool VSYNC_ENABLED = true;
 const float SCREEN_DEPTH = 5000.0f;
 const float SCREEN_NEAR = 0.1f;
@@ -63,8 +64,10 @@ private:
 	int  m_numOfObject;
 	D3DXMATRIX m_TextMatrix;
 	SoundClass *m_BackGroundSound;
+	ColliderClass * m_Col;
+	float  m_radius[8];
 	bool m_bIsTextControl;
-	
+	int m_iHp;
 
 
 };

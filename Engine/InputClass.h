@@ -11,7 +11,7 @@
 enum class KeyCode {
 	W, A, S, D,
 	ESCAPE, LSHFIT,
-	F1, F2,ONE,TWO,THREE ,SPACE,Q,E,T
+	F1, F2,ONE,TWO,THREE ,SPACE,Q,E,T,ENTER
 };
 
 

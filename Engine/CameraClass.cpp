@@ -119,6 +119,8 @@ void CameraClass::SetRotation(float x, float y, float z)
 
 void CameraClass::SetSpeed(float speed)
 {
+
+
 	m_speed = speed;
 }
 

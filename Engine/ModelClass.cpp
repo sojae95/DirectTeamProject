@@ -11,6 +11,7 @@ ModelClass::ModelClass()
 	m_indexBuffer = 0;
 	m_Texture = 0;
 	m_model = 0;
+	m_blsCheckColl = false;
 }
 
 
@@ -504,3 +505,10 @@ int ModelClass::GetPolygonsCount()
 	return m_polygonsCount;
 }
 
+
+bool ModelClass::GetCheckColl() {
+	return m_blsCheckColl;
+}
+void ModelClass::SetCheckColl(bool checkColl) {
+	m_blsCheckColl = checkColl;
+}

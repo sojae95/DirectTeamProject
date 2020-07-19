@@ -57,6 +57,9 @@ public:
 	ID3D11ShaderResourceView* GetTexture();
 
 
+	bool GetCheckColl();
+	void SetCheckColl(bool);
+
 private:
 	bool InitializeBuffers(ID3D11Device*);
 	void ShutdownBuffers();
@@ -75,6 +78,10 @@ private:
 	int m_vertexCount, m_indexCount , m_polygonsCount;
 	TextureClass* m_Texture;
 	ModelType* m_model;
+
+	bool m_blsCheckColl;
+	
+	
 };
 
 #endif

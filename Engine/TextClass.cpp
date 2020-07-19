@@ -544,7 +544,7 @@ bool TextClass::SetNumOfObjects(int num, ID3D11DeviceContext* deviceContext)
 }
 
 
-bool TextClass::SetSpeed(int cpu, ID3D11DeviceContext* deviceContext)
+bool TextClass::SetSpeed(float cpu, ID3D11DeviceContext* deviceContext)
 {
 	char tempString[16];
 	char cpuString[16];

@@ -19,10 +19,13 @@
 #include "textureshaderclass.h"
 #include "SoundClass.h"
 #include "ColliderClass.h"
+#include "ParticleSystemClass.h"
+#include "ParticleShaderClass.h"
+
 /////////////
 // GLOBALS //
 /////////////
-const bool FULL_SCREEN = false;
+const bool FULL_SCREEN = true;
 const bool VSYNC_ENABLED = true;
 const float SCREEN_DEPTH = 5000.0f;
 const float SCREEN_NEAR = 0.1f;
@@ -64,11 +67,21 @@ private:
 	int  m_numOfObject;
 	D3DXMATRIX m_TextMatrix;
 	SoundClass *m_BackGroundSound;
+	SoundClass *m_EffectSound;
 	ColliderClass * m_Col;
-	float  m_radius[8];
+	float  m_radius[30];
 	bool m_bIsTextControl;
 	int m_iHp;
 
+	bool m_bIsClear;
+	bool m_bIsColParticle;
+	bool m_bIsGameStart;
+
+	float m_fParticleTime = 0.0f;
+
+	ParticleShaderClass* m_ParticleShader;
+	ParticleSystemClass* m_ParticleSystem;
+	ParticleSystemClass* m_CollisionParticleSystem;
 
 };
 #endif

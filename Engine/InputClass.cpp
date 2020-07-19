@@ -27,7 +27,9 @@ InputClass::InputClass()
 		{ KeyCode::SPACE, DIK_SPACE},
 		{ KeyCode::Q,		DIK_Q },
 		{ KeyCode::E,		DIK_E },
-		{ KeyCode::T,		DIK_T }
+		{ KeyCode::T,		DIK_T },
+		{ KeyCode::ENTER,	DIK_RETURN }
+
 	};
 }
 
